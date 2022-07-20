@@ -5,8 +5,10 @@ import MovieCard from "../components/movieCard";
 import { viewportMatchingValue } from "../utils/responsive";
 
 const HomePage = () => {
+    const carouselInitialPosition = viewportMatchingValue(1, 6, 6, 6)
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
+    const [carouselPosition, setCarouselPosition] = useState(carouselInitialPosition)
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
@@ -14,12 +16,12 @@ const HomePage = () => {
     }, [])
 
     const moveCarousel = (isNext) => {
-        const colSize = carousel.current.clientWidth / viewportMatchingValue(1, 6, 6, 6)
-
+        const colSize = carousel.current?.clientWidth / viewportMatchingValue(1, 6, 6, 6)
         carousel.current.scrollBy({
             left: isNext? colSize : -colSize,
             behavior: 'smooth'
         })
+        setCarouselPosition(prev => isNext ? prev + 1 : prev - 1)
     }
     const slideNext = () => moveCarousel(true)
     const slidePrev = () => moveCarousel()
@@ -27,7 +29,7 @@ const HomePage = () => {
     return (
         <MainLayout>
             <div className="flex items-center scroll-smooth">
-                <button onClick={slidePrev} className="flex-shrink-0 w-12 h-12 bg-gray-900 rounded-full">
+                <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
                     <i className='bx bx-chevron-left text-4xl text-white'></i>
                 </button>
                 <div ref={carousel} className="flex overflow-hidden rounded-lg mx-5">
@@ -37,7 +39,7 @@ const HomePage = () => {
                         </div>
                     ))}
                 </div>
-                <button onClick={slideNext} className="flex-shrink-0 w-12 h-12 bg-gray-900 rounded-full">
+                <button disabled={carouselPosition === films.length} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
                     <i className='bx bx-chevron-right text-4xl text-white'></i>
                 </button>
             </div>
