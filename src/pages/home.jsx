@@ -27,7 +27,8 @@ const HomePage = () => {
     const slidePrev = () => moveCarousel()
 
     return (
-        <MainLayout>
+        <MainLayout className="">
+            <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/qG3RYlIVpTYclR9TYIsy8p7m7AT.jpg" alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
             <div className="flex items-center scroll-smooth">
                 <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
                     <i className='bx bx-chevron-left text-4xl text-white'></i>
