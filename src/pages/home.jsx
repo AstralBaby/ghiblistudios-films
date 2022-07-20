@@ -13,6 +13,7 @@ const HomePage = () => {
 
     return (
         <MainLayout>
+            <i class='bx bx-chevron-left'></i>
             <div className="flex overflow-hidden rounded-lg">
                 {films.map((entry, idx) => (
                     <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">

@@ -1,4 +1,5 @@
 import './assets/styles/tailwind.css';
+import './assets/styles/boxicons.css';
 import HomePage from './pages/home';
 
 function App() {
