@@ -28,23 +28,52 @@ const HomePage = () => {
 
     return (
         <MainLayout className="">
-            <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
-            <div className="flex items-center scroll-smooth">
-                <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
-                    <i className='bx bx-chevron-left text-4xl text-white'></i>
-                </button>
-                <div ref={carousel} className="flex overflow-hidden rounded-lg mx-5">
-                    {films.map((entry, idx) => (
-                        <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
-                            <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
-                        </div>
-                    ))}
+            <div className="h-full flex flex-col">
+                <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
+                <div className="flex items-center scroll-smooth">
+                    <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
+                        <i className='bx bx-chevron-left text-4xl text-white'></i>
+                    </button>
+                    <div ref={carousel} className="flex overflow-hidden rounded-lg mx-5">
+                        {films.map((entry, idx) => (
+                            <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
+                                <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
+                            </div>
+                        ))}
+                    </div>
+                    <button disabled={carouselPosition === films.length} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
+                        <i className='bx bx-chevron-right text-4xl text-white'></i>
+                    </button>
                 </div>
-                <button disabled={carouselPosition === films.length} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
-                    <i className='bx bx-chevron-right text-4xl text-white'></i>
-                </button>
+                {films.length && <FilmDetails film={films[carouselPosition]} />}
             </div>
         </MainLayout>
+    )
+}
+
+const FilmDetails = ({ film }) => {
+    return (
+        <div className="bg-white/90 rounded-t-xl mt-auto -mb-10 mx-auto p-10 shadow-lg w-2/4 text-gray-700">
+            <div className="font-black text-2xl">
+                {film.title}
+            </div>
+            <div className="text-lg mt-3">
+                {film.description}
+            </div>
+            <div className="border rounded-lg flex p-5">
+                <div className="font-bold pr-5">
+                    <div>Director</div>
+                    <div>Producer</div>
+                    <div>Released</div>
+                </div>
+                <div className="flew-grow-1">
+                    <div>{film.director}</div>
+                    <div>{film.producer}</div>
+                    <div>{film.released}</div>
+                    <div>{film.director}</div>
+                </div>
+            </div>
+        </div>
     )
 }
 
