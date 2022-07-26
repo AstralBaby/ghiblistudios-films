@@ -34,7 +34,7 @@ const HomePage = () => {
                     <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
                         <i className='bx bx-chevron-left text-4xl text-white'></i>
                     </button>
-                    <div ref={carousel} className="flex overflow-hidden rounded-lg mx-5">
+                    <div ref={carousel} className="flex overflow-hidden mx-5">
                         {films.map((entry, idx) => (
                             <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
                                 <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
@@ -57,22 +57,25 @@ const FilmDetails = ({ film }) => {
             <div className="font-black text-2xl">
                 {film.title}
             </div>
-            <div className="text-lg mt-3">
+            <div className="text-lg my-3">
                 {film.description}
             </div>
-            <div className="border rounded-lg flex p-5">
+            <div className="rounded-lg flex mb-4">
                 <div className="font-bold pr-5">
-                    <div>Director</div>
-                    <div>Producer</div>
-                    <div>Released</div>
+                    <div className="py-2">Director</div>
+                    <div className="py-2">Producer</div>
+                    <div className="py-2">Release Date</div>
                 </div>
                 <div className="flew-grow-1">
-                    <div>{film.director}</div>
-                    <div>{film.producer}</div>
-                    <div>{film.released}</div>
-                    <div>{film.director}</div>
+                    <div className="py-2">{film.director}</div>
+                    <div className="py-2">{film.producer}</div>
+                    <div className="py-2">{film.release_date}</div>
                 </div>
             </div>
+            <button className="py-2 px-5 rounded-md text-red-700 border border-red-700 text-sm font-medium hover:bg-red-700 hover:text-white">
+                <i className="bx bx-trash-alt align-middle mr-2"></i>
+                Delete Title
+            </button>
         </div>
     )
 }
