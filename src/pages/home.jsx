@@ -25,9 +25,10 @@ const HomePage = () => {
     }
     const slideNext = () => moveCarousel(true)
     const slidePrev = () => moveCarousel()
-
+    function handleSearch() {}
+    
     return (
-        <MainLayout className="">
+        <MainLayout onSearch={handleSearch}>
             <div className="h-full flex flex-col">
                 <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
                 <div className="flex items-center scroll-smooth">
