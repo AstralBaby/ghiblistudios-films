@@ -10,6 +10,7 @@ const HomePage = () => {
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
     const [carouselPosition, setCarouselPosition] = useState(carouselInitialPosition)
+    const [noResults, setNoResults] = useState(false)
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
@@ -27,23 +28,59 @@ const HomePage = () => {
     const slideNext = () => moveCarousel(true)
     const slidePrev = () => moveCarousel()
 
-    const filteredFilms = () => {
-        return films
+    const filteredFilms = (params) => {
+        if (params) {
+            // return films filtered, if none matches the search criteria, return all films
+            // and show an alert.
+            const filtered = films.filter(film => {
+                let display = true
+                if (params.dateFrom && params.dateTo) {
+                    const releasedAt = new Date(film.release_date)
+                    if (!(releasedAt >= new Date(params.dateFrom) && releasedAt <= new Date(params.dateTo))) display = false
+                }
+                if (params.searchQuery) {
+                    const kw = new RegExp(`^${params.searchQuery}.*$`, "g")
+
+                    if (!(film.title.toLowerCase().match(kw) ||
+                          film.director.toLowerCase().match(kw) ||
+                          film.director.toLowerCase().match(kw)
+                        )) display = false
+                }
+
+                return display
+            })
+
+            if (filtered.length) {
+                setNoResults(false)
+                return filtered
+            }
+            else {
+                setNoResults(true)
+                return films
+            }
+        }
+        return films 
     }
 
     
     return (
         <MainLayout>
             <SearchContext.Consumer>
-                {context => (
+                {searchParams => (
                     <div className="h-full flex flex-col">
                     <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
+                    {noResults && (
+                        <div className="p-3 w-1/4 mx-auto rounded bg-gray-200 text-gray-700 font-medium text-sm">
+                            <i className="bx bx-sad mr-1 text-lg align-middle" />
+                            We could not find any film with that search criteria
+                        </div>
+                    )}
                     <div className="flex items-center scroll-smooth">
                         <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
                             <i className='bx bx-chevron-left text-4xl text-white'></i>
                         </button>
-                        <div ref={carousel} className="flex overflow-hidden mx-5">
-                            {filteredFilms().map((entry, idx) => (
+                        <div ref={carousel} className="flex overflow-hidden mx-5 flex-grow">
+                            {filteredFilms(searchParams).map((entry, idx) => (
                                 <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
                                     <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
                                 </div>
@@ -53,7 +90,6 @@ const HomePage = () => {
                             <i className='bx bx-chevron-right text-4xl text-white'></i>
                         </button>
                     </div>
-                    { JSON.stringify(context) }
                     {films.length && <FilmDetails film={films[carouselPosition]} />}
                 </div>
                 )}

@@ -7,8 +7,8 @@ const MainLayout = ({ children }) => {
     const [showFilter, setShowFilter] = useState(false)
     const toggleFilter = () => setShowFilter(prev => !prev)
 
-    const [dateFrom, setDateFrom] = useState('1984-03-11')
-    const [dateTo, setDateTo] = useState('1984-03-11')
+    const [dateFrom, setDateFrom] = useState('')
+    const [dateTo, setDateTo] = useState('')
     const [searchQuery, setSearchQuery] = useState('')
 
     const classes = {
