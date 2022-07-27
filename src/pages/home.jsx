@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState, useRef, useContext } from "react";
-import MainLayout, { LayoutContext } from "../components/layouts/main";
+import MainLayout from "../components/layouts/main";
 import MovieCard from "../components/movieCard";
+import SearchContext from "../contexts/SearchContext";
 import { viewportMatchingValue } from "../utils/responsive";
 
 const HomePage = () => {
@@ -9,7 +10,6 @@ const HomePage = () => {
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
     const [carouselPosition, setCarouselPosition] = useState(carouselInitialPosition)
-    const layoutContext = useContext(LayoutContext)
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
@@ -30,29 +30,34 @@ const HomePage = () => {
     const filteredFilms = () => {
         return films
     }
+
     
     return (
         <MainLayout>
-            <div className="h-full flex flex-col">
-                <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
-                <div className="flex items-center scroll-smooth">
-                    <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
-                        <i className='bx bx-chevron-left text-4xl text-white'></i>
-                    </button>
-                    <div ref={carousel} className="flex overflow-hidden mx-5">
-                        {filteredFilms().map((entry, idx) => (
-                            <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
-                                <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
-                            </div>
-                        ))}
+            <SearchContext.Consumer>
+                {context => (
+                    <div className="h-full flex flex-col">
+                    <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
+                    <div className="flex items-center scroll-smooth">
+                        <button disabled={carouselPosition === carouselInitialPosition} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
+                            <i className='bx bx-chevron-left text-4xl text-white'></i>
+                        </button>
+                        <div ref={carousel} className="flex overflow-hidden mx-5">
+                            {filteredFilms().map((entry, idx) => (
+                                <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
+                                    <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
+                                </div>
+                            ))}
+                        </div>
+                        <button disabled={carouselPosition === films.length} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
+                            <i className='bx bx-chevron-right text-4xl text-white'></i>
+                        </button>
                     </div>
-                    <button disabled={carouselPosition === films.length} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
-                        <i className='bx bx-chevron-right text-4xl text-white'></i>
-                    </button>
+                    { JSON.stringify(context) }
+                    {films.length && <FilmDetails film={films[carouselPosition]} />}
                 </div>
-                { JSON.stringify(layoutContext) }
-                {films.length && <FilmDetails film={films[carouselPosition]} />}
-            </div>
+                )}
+            </SearchContext.Consumer>
         </MainLayout>
     )
 }
