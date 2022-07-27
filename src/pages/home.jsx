@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
-import MainLayout from "../components/layouts/main";
+import { useEffect, useState, useRef, useContext } from "react";
+import MainLayout, { LayoutContext } from "../components/layouts/main";
 import MovieCard from "../components/movieCard";
 import { viewportMatchingValue } from "../utils/responsive";
 
@@ -9,6 +9,7 @@ const HomePage = () => {
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
     const [carouselPosition, setCarouselPosition] = useState(carouselInitialPosition)
+    const layoutContext = useContext(LayoutContext)
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
@@ -25,10 +26,13 @@ const HomePage = () => {
     }
     const slideNext = () => moveCarousel(true)
     const slidePrev = () => moveCarousel()
-    function handleSearch() {}
+
+    const filteredFilms = () => {
+        return films
+    }
     
     return (
-        <MainLayout onSearch={handleSearch}>
+        <MainLayout>
             <div className="h-full flex flex-col">
                 <img src={films.length && films[carouselPosition].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
                 <div className="flex items-center scroll-smooth">
@@ -36,7 +40,7 @@ const HomePage = () => {
                         <i className='bx bx-chevron-left text-4xl text-white'></i>
                     </button>
                     <div ref={carousel} className="flex overflow-hidden mx-5">
-                        {films.map((entry, idx) => (
+                        {filteredFilms().map((entry, idx) => (
                             <div key={idx} className="flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
                                 <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
                             </div>
@@ -46,6 +50,7 @@ const HomePage = () => {
                         <i className='bx bx-chevron-right text-4xl text-white'></i>
                     </button>
                 </div>
+                { JSON.stringify(layoutContext) }
                 {films.length && <FilmDetails film={films[carouselPosition]} />}
             </div>
         </MainLayout>
