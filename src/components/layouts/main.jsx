@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import logo from '../../assets/logox600.png'
 import SearchContext from '../../contexts/SearchContext'
 
@@ -17,6 +17,8 @@ const MainLayout = ({ children }) => {
         filterBtn: 'bg-gray-300 rounded-lg text-gray-700 text-sm font-medium py-2 px-4',
         datePicker: 'border border-gray-300 p-1 rounded ml-3'
     }
+
+    const searchParams = useMemo(() => ({dateFrom, dateTo, searchQuery}), [dateFrom, dateTo, searchQuery])
 
     return (
         <div className="w-screen h-screen bg-white/60 overflow-y-scroll flex flex-col">
@@ -58,7 +60,7 @@ const MainLayout = ({ children }) => {
                 </div>
             </div>
             <div className="p-10 flex-1">
-                <SearchContext.Provider value={{dateFrom, dateTo, searchQuery}}>
+                <SearchContext.Provider value={searchParams}>
                     {children}
                 </SearchContext.Provider>
             </div>

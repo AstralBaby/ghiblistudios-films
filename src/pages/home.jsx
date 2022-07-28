@@ -12,12 +12,15 @@ const HomePage = () => {
     const [noResults, setNoResults] = useState(false)
     const [scroll, setScroll] = useState(0)
     const [maxScroll, setMaxScroll] = useState(0)
+    const context = useContext(SearchContext)
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
         axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => setFilms(data))
-        setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth)
-    }, [films, maxScroll])
+        // wait till the carousel node is rendered
+        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 300)
+        console.log("scroll is : ", maxScroll)
+    }, [maxScroll])
 
     const moveCarousel = (isNext) => {
         const colSize = carousel.current?.clientWidth / viewportMatchingValue(1, 6, 6, 6)
@@ -47,7 +50,6 @@ const HomePage = () => {
                           film.director.toLowerCase().match(kw)
                         )) display = false
                 }
-
                 return display
             })
 
@@ -69,32 +71,32 @@ const HomePage = () => {
             <SearchContext.Consumer>
                 {searchParams => (
                     <div className="h-full flex flex-col">
-                    <img src={films.length && films[currentFilm].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
-                    {noResults && (
-                        <div className="p-3 w-1/4 mx-auto rounded bg-gray-200 text-gray-700 font-medium text-sm">
-                            <i className="bx bx-sad mr-1 text-lg align-middle" />
-                            We could not find any film with that search criteria
+                        <img src={films.length && films[currentFilm].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
+                        {noResults && (
+                            <div className="p-3 w-1/4 mx-auto rounded bg-gray-200 text-gray-700 font-medium text-sm">
+                                <i className="bx bx-sad mr-1 text-lg align-middle" />
+                                We could not find any film with that search criteria
+                            </div>
+                        )}
+                        <div className="flex items-center scroll-smooth">
+                            <button disabled={scroll === 0} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
+                                <i className='bx bx-chevron-left text-4xl text-white'></i>
+                            </button>
+                            <div ref={carousel} onScroll={e => setScroll(e.target.scrollLeft)} className="flex overflow-hidden mx-5 flex-grow">
+                                {filteredFilms(searchParams).map((entry, idx) => (
+                                    <div onClick={() => setCurrentFilm(idx)} key={idx} className="cursor-pointer flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
+                                        <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
+                                    </div>
+                                ))}
+                            </div>
+                            <button disabled={scroll === maxScroll} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
+                                <i className='bx bx-chevron-right text-4xl text-white'></i>
+                            </button>
                         </div>
-                    )}
-                    <div className="flex items-center scroll-smooth">
-                        <button disabled={scroll === 0} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
-                            <i className='bx bx-chevron-left text-4xl text-white'></i>
-                        </button>
-                        <div ref={carousel} onScroll={e => setScroll(e.target.scrollLeft)} className="flex overflow-hidden mx-5 flex-grow">
-                            {filteredFilms(searchParams).map((entry, idx) => (
-                                <div onClick={() => setCurrentFilm(idx)} key={idx} className="cursor-pointer flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
-                                    <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
-                                </div>
-                            ))}
-                        </div>
-                        <button disabled={scroll === maxScroll} onClick={slideNext} className="enabled:bg-gray-900 flex-shrink-0 w-12 h-12 bg-gray-400 rounded-full">
-                            <i className='bx bx-chevron-right text-4xl text-white'></i>
-                        </button>
+                        {films.length && (
+                            <FilmDetails film={films[currentFilm]} />
+                        )}
                     </div>
-                    {films.length && currentFilm && (
-                        <FilmDetails film={films[currentFilm]} />
-                    )}
-                </div>
                 )}
             </SearchContext.Consumer>
         </MainLayout>
