@@ -93,6 +93,9 @@ const MainLayout = ({ children }) => {
                         <i className="bx bx-x self-center text-gray-400 text-xl" />
                     </button>
                 </div>
+                <div className="mt-5 border-2 border-gray-200 flex h-20 rounded-lg">
+                    asdasd
+                </div>
             </Dialog>
         </div>
     )
