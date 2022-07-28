@@ -8,7 +8,7 @@ import { viewportMatchingValue } from "../utils/responsive";
 const HomePage = () => {
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
-    const [currentFilm, setCurrentFilm] = useState(0)
+    const [currentFilm, setCurrentFilm] = useState('')
     const [noResults, setNoResults] = useState(false)
     const [scroll, setScroll] = useState(0)
     const [maxScroll, setMaxScroll] = useState(0)
@@ -18,6 +18,7 @@ const HomePage = () => {
     useEffect(() => {
         axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => setFilms(data))
         // wait till the carousel node is rendered
+        
         setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 300)
         console.log("scroll is : ", maxScroll)
     }, [maxScroll])
@@ -29,9 +30,14 @@ const HomePage = () => {
             behavior: 'smooth'
         })
     }
+    const getCurrentFilm = films.find(f => f.id === currentFilm) || films[0]
     const slideNext = () => moveCarousel(true)
     const slidePrev = () => moveCarousel()
-
+    const removeCurrentFilm = () => {
+        setFilms(old => old.filter((f) => f.id !== currentFilm))
+        setCurrentFilm(films[0].id)
+        // todo add edge case: when there is only one film left
+    }
     const filteredFilms = (params) => {
         if (params) {
             // return films filtered, if none matches the search criteria, return all films
@@ -71,7 +77,7 @@ const HomePage = () => {
             <SearchContext.Consumer>
                 {searchParams => (
                     <div className="h-full flex flex-col">
-                        <img src={films.length && films[currentFilm].image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
+                        <img src={films.length && getCurrentFilm.image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
                         {noResults && (
                             <div className="p-3 w-1/4 mx-auto rounded bg-gray-200 text-gray-700 font-medium text-sm">
                                 <i className="bx bx-sad mr-1 text-lg align-middle" />
@@ -84,7 +90,7 @@ const HomePage = () => {
                             </button>
                             <div ref={carousel} onScroll={e => setScroll(e.target.scrollLeft)} className="flex overflow-hidden mx-5 flex-grow">
                                 {filteredFilms(searchParams).map((entry, idx) => (
-                                    <div onClick={() => setCurrentFilm(idx)} key={idx} className="cursor-pointer flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
+                                    <div onClick={() => setCurrentFilm(entry.id)} key={idx} className="cursor-pointer flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
                                         <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
                                     </div>
                                 ))}
@@ -94,7 +100,7 @@ const HomePage = () => {
                             </button>
                         </div>
                         {films.length && (
-                            <FilmDetails film={films[currentFilm]} />
+                            <FilmDetails film={getCurrentFilm} onRemove={removeCurrentFilm} />
                         )}
                     </div>
                 )}
@@ -103,11 +109,13 @@ const HomePage = () => {
     )
 }
 
-const FilmDetails = ({ film }) => {
+const FilmDetails = ({ film, onRemove }) => {
     return (
         <div className="bg-white/90 rounded-t-xl mt-auto -mb-10 mx-auto p-10 shadow-lg w-2/4 text-gray-700">
-            <div className="font-black text-2xl">
-                {film.title}
+            <div className="flex justify-between align-center">
+                <div className="font-black text-2xl">
+                    {film.title}
+                </div>
             </div>
             <div className="text-lg my-3">
                 {film.description}
@@ -124,7 +132,7 @@ const FilmDetails = ({ film }) => {
                     <div className="py-2">{film.release_date}</div>
                 </div>
             </div>
-            <button className="py-2 px-5 rounded-md text-red-700 border border-red-700 text-sm font-medium hover:bg-red-700 hover:text-white">
+            <button onClick={onRemove} className="py-2 px-5 rounded-md text-red-700 border border-red-700 text-sm font-medium hover:bg-red-700 hover:text-white">
                 <i className="bx bx-trash-alt align-middle mr-2"></i>
                 Delete Title
             </button>
