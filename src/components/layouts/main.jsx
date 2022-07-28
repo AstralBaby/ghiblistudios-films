@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import logo from '../../assets/logox600.png'
 import SearchContext from '../../contexts/SearchContext'
+import Dialog from "../../components/dialog"
 
 
 const MainLayout = ({ children }) => {
     const [showFilter, setShowFilter] = useState(false)
     const toggleFilter = () => setShowFilter(prev => !prev)
+
+    const [showPublish, setShowPublish] = useState(false)
 
     const [dateFrom, setDateFrom] = useState('')
     const [dateTo, setDateTo] = useState('')
@@ -37,7 +40,7 @@ const MainLayout = ({ children }) => {
     return (
         <div className="w-screen h-screen bg-white/60 overflow-y-scroll flex flex-col">
             <div className="py-5 sticky top-0 flex items-start px-10 z-20">
-                <div className="flex-1">
+                <div className="flex-1" onMouse>
                     <img style={{width: 200}} src={logo} alt="Ghibli Studios" className="" />
                 </div>
                 <div className="flex-1 flex justify-center relative" id="searchbox">
@@ -75,7 +78,7 @@ const MainLayout = ({ children }) => {
                     </div>
                 </div>
                 <div className="flex-1 flex justify-end">
-                    <button className="bg-blue-700 text-white text-sm font-bold rounded px-5 py-2">Publish</button>
+                    <button onClick={() => setShowPublish(true)} className="bg-blue-700 text-white text-sm font-bold rounded px-5 py-2">Publish</button>
                 </div>
             </div>
             <div className="p-10 flex-1">
@@ -83,6 +86,14 @@ const MainLayout = ({ children }) => {
                     {children}
                 </SearchContext.Provider>
             </div>
+            <Dialog open={showPublish} width={500}>
+                <div className="flex">
+                    <div className="text-lg font-bold text-gray-700 flex-grow">Add new film</div>
+                    <button className="cursor-pointer" onClick={() => setShowPublish(false)}>
+                        <i className="bx bx-x self-center text-gray-400 text-xl" />
+                    </button>
+                </div>
+            </Dialog>
         </div>
     )
 }

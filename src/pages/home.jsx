@@ -5,6 +5,7 @@ import MovieCard from "../components/movieCard";
 import SearchContext from "../contexts/SearchContext";
 import { viewportMatchingValue } from "../utils/responsive";
 
+
 const HomePage = () => {
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
