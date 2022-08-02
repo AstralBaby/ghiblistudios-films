@@ -109,9 +109,7 @@ const PublishForm = ({ onSubmit }) => {
     
     const handleSubmit = e => {
         e.preventDefault()
-        const date = new Date()
-        const formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`
-        onSubmit({thumb, image, title, director, producer, description, release_date: formattedDate, id: new Date().getMilliseconds()})
+        onSubmit({thumb, image, title, director, producer, description, release_date: new Date().getFullYear(), id: new Date().getMilliseconds()})
     } 
 
     return (
