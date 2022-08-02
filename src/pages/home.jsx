@@ -7,6 +7,7 @@ import { viewportMatchingValue } from "../utils/responsive";
 
 
 const HomePage = () => {
+    const [isLoading, setIsLoading] = useState(true)
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
     const [currentFilm, setCurrentFilm] = useState('')
@@ -17,11 +18,10 @@ const HomePage = () => {
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
-        axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => setFilms(data))
-        // wait till the carousel node is rendered
-        
-        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 300)
-        console.log("scroll is : ", maxScroll)
+        axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => {
+            setFilms(data)
+            setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth)
+        })
     }, [maxScroll])
 
     const moveCarousel = (isNext) => {
