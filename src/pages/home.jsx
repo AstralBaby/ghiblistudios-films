@@ -7,21 +7,18 @@ import { viewportMatchingValue } from "../utils/responsive";
 
 
 const HomePage = () => {
-    const [isLoading, setIsLoading] = useState(true)
     const [films, setFilms] = useState([])
     const carousel = useRef(null)
     const [currentFilm, setCurrentFilm] = useState('')
     const [noResults, setNoResults] = useState(false)
     const [scroll, setScroll] = useState(0)
     const [maxScroll, setMaxScroll] = useState(0)
-    const context = useContext(SearchContext)
     //todo add transition hook to add loader when there is no movies
 
     useEffect(() => {
-        axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => {
-            setFilms(data)
-            setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth)
-        })
+        axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => setFilms(data))
+        // wait till the carousel node is rendered
+        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 300)
     }, [maxScroll])
 
     const moveCarousel = (isNext) => {
@@ -35,11 +32,10 @@ const HomePage = () => {
     const slideNext = () => moveCarousel(true)
     const slidePrev = () => moveCarousel()
     const removeCurrentFilm = () => {
+        // todo add edge case: when there is only one film left
         setFilms(old => old.filter((f) => f.id !== currentFilm))
         setCurrentFilm(films[0].id)
-        // todo add edge case: when there is only one film left
     }
-
     const handleNewFilm = newFilm => {
         setFilms(films => [newFilm, ...films])
         
@@ -71,14 +67,7 @@ const HomePage = () => {
                 return display
             })
 
-            if (filtered.length) {
-                setNoResults(false)
-                return filtered
-            }
-            else {
-                setNoResults(true)
-                return films
-            }
+            return filtered
         }
         return films 
     }
@@ -87,10 +76,10 @@ const HomePage = () => {
     return (
         <MainLayout onPublish={handleNewFilm}>
             <SearchContext.Consumer>
-                {searchParams => (
+                {(searchParams, cachedFilms = filteredFilms(searchParams)) => (
                     <div className="h-full flex flex-col">
                         <img src={films.length && getCurrentFilm.image} alt="" className="fixed blur-2xl w-screen h-screen object-fit" style={{zIndex: -1}} />
-                        {noResults && (
+                        {!cachedFilms.length && (
                             <div className="p-3 w-1/4 mx-auto rounded bg-gray-200 text-gray-700 font-medium text-sm">
                                 <i className="bx bx-sad mr-1 text-lg align-middle" />
                                 We could not find any film with that search criteria
@@ -101,7 +90,7 @@ const HomePage = () => {
                                 <i className='bx bx-chevron-left text-4xl text-white'></i>
                             </button>
                             <div ref={carousel} onScroll={e => setScroll(e.target.scrollLeft)} className="flex overflow-hidden mx-5 flex-grow">
-                                {filteredFilms(searchParams).map((entry, idx) => (
+                                {(cachedFilms.length ? cachedFilms : films).map((entry, idx) => (
                                     <div onClick={() => setCurrentFilm(entry.id)} key={idx} className="cursor-pointer flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
                                         <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
                                     </div>

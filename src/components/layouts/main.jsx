@@ -40,7 +40,7 @@ const MainLayout = ({ children, onPublish }) => {
     return (
         <div className="w-screen h-screen bg-white/60 overflow-y-scroll flex flex-col">
             <div className="py-5 sticky top-0 flex items-start px-10 z-20">
-                <div className="flex-1" onMouse>
+                <div className="flex-1">
                     <img style={{width: 200}} src={logo} alt="Ghibli Studios" className="" />
                 </div>
                 <div className="flex-1 flex justify-center relative" id="searchbox">
