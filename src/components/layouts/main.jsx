@@ -4,7 +4,7 @@ import SearchContext from '../../contexts/SearchContext'
 import Dialog from "../../components/dialog"
 
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, onPublish }) => {
     const [showFilter, setShowFilter] = useState(false)
     const toggleFilter = () => setShowFilter(prev => !prev)
 
@@ -93,11 +93,106 @@ const MainLayout = ({ children }) => {
                         <i className="bx bx-x self-center text-gray-400 text-xl" />
                     </button>
                 </div>
-                <div className="mt-5 border-2 border-gray-200 flex h-20 rounded-lg">
-                    asdasd
-                </div>
+                <PublishForm onSubmit={onPublish}/>
             </Dialog>
         </div>
+    )
+}
+
+const PublishForm = ({ onSubmit }) => {
+    const [thumb, setThumb] = useState('')
+    const [image, setImage] = useState('')
+    const [title, setTitle] = useState('')
+    const [director, setDirector] = useState('')
+    const [producer, setProducer] = useState('')
+    const [description, setDescription] = useState('')
+    
+    const handleSubmit = e => {
+        e.preventDefault()
+        const date = new Date()
+        const formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`
+        onSubmit({thumb, image, title, director, producer, description, release_date: formattedDate, id: new Date().getMilliseconds()})
+    } 
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div className="mt-5 -mx-5">
+                <div className="flex items-center px-5">
+                    <div className="w-1/4 font-medium text-sm text-gray-800">
+                        Thumbnail
+                    </div>
+                    <div className="w-3/4 py-3">
+                        <FileUploader onChange={setThumb}></FileUploader>
+                    </div>
+                </div>
+                <div className="flex items-center bg-gray-100 px-5">
+                    <div className="w-1/4 font-medium text-sm text-gray-800">
+                        Portrait
+                    </div>
+                    <div className="w-3/4 py-3">
+                        <FileUploader onChange={setImage}></FileUploader>
+                    </div>
+                </div>
+                <div className="flex items-center px-5">
+                    <div className="w-1/4 font-medium text-sm text-gray-800">
+                        Title
+                    </div>
+                    <div className="w-3/4 py-3">
+                        <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="border-2 rounded py-1" />
+                    </div>
+                </div>
+                <div className="flex items-center bg-gray-100 px-5">
+                    <div className="w-1/4 font-medium text-sm text-gray-800">
+                        Director
+                    </div>
+                    <div className="w-3/4 py-3">
+                        <input type="text" value={director} onChange={e => setDirector(e.target.value)} className="border-2 rounded py-1" />
+                    </div>
+                </div>
+                <div className="flex items-center px-5">
+                    <div className="w-1/4 font-medium text-sm text-gray-800">
+                        Producer
+                    </div>
+                    <div className="w-3/4 py-3">
+                        <input type="text" value={producer} onChange={e => setProducer(e.target.value)} className="border-2 rounded py-1" />
+                    </div>
+                </div>
+                <div className="flex items-center bg-gray-100 px-5">
+                    <div className="w-1/4 font-medium text-sm text-gray-800">
+                        Description
+                    </div>
+                    <div className="w-3/4 py-3">
+                        <textarea value={description} onChange={e => setDescription(e.target.value)} className="border-2 rounded" name="" id="" cols="30" rows="3" />
+                    </div>
+                </div>
+            </div>
+            <div className="mt-5">
+                <button className="w-full bg-blue-600 py-2 text-white rounded-lg font-bold text-sm">Publish</button>
+            </div>
+        </form>
+    )
+}
+const FileUploader = ({onChange}) => {
+    const [file, setFile] = useState('')
+    const [label, setLabel] = useState('')
+
+    const handleUpload = e => {
+        const file = e.target.files[0]
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+
+        reader.onload = () => {
+            setFile(reader.result)
+            setLabel(file.name)
+            onChange(reader.result)
+        }
+    }
+
+    return (
+        <label className='rounded border border-gray-300 text-gray-700 text-sm font-bold px-3 py-2'>
+            <input type="file" onChange={handleUpload} className="hidden" />
+            {label || 'Upload a file'}
+        </label>
     )
 }
 

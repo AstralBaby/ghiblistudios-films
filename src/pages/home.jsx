@@ -39,6 +39,17 @@ const HomePage = () => {
         setCurrentFilm(films[0].id)
         // todo add edge case: when there is only one film left
     }
+
+    const handleNewFilm = newFilm => {
+        setFilms(films => [newFilm, ...films])
+        
+        carousel.current.scrollTo({
+            left: 0,
+            behavior: 'smooth'
+        })
+        setCurrentFilm(films[0].id)
+    }
+
     const filteredFilms = (params) => {
         if (params) {
             // return films filtered, if none matches the search criteria, return all films
@@ -74,7 +85,7 @@ const HomePage = () => {
 
     
     return (
-        <MainLayout>
+        <MainLayout onPublish={handleNewFilm}>
             <SearchContext.Consumer>
                 {searchParams => (
                     <div className="h-full flex flex-col">
