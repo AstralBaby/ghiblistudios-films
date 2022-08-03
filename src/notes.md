@@ -8,5 +8,7 @@
 - 
 - Once the mockup is fully completed i start building the layout structure in react.
 
+# Note
+This website is not fully responsive, sorry for that.
 
 

@@ -18,7 +18,7 @@ const HomePage = () => {
     useEffect(() => {
         axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => setFilms(data))
         // wait till the carousel node is rendered
-        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 400)
+        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 500)
     }, [maxScroll])
 
     const moveCarousel = (isNext) => {
@@ -112,7 +112,7 @@ const HomePage = () => {
 
 const FilmDetails = ({ film, onRemove }) => {
     return (
-        <div className="bg-white/90 rounded-t-xl mt-auto -mb-10 mx-auto p-10 shadow-lg w-full md:w-2/4 text-gray-700">
+        <div className="bg-white/90 rounded-t-xl mt-auto -mb-10 mx-auto p-10 shadow-lg w-full md:w-3/4 lg:w-2/4 text-gray-700">
             <div className="flex justify-between align-center">
                 <div className="font-black text-2xl">
                     {film.title}
