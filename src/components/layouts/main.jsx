@@ -79,7 +79,7 @@ const MainLayout = ({ children, onPublish }) => {
                 </div>
                 <div className="flex-1 flex mt-2">
                     <button id="filter-btn" onClick={toggleFilter} className={classes.filterBtn.concat(' border-md bg-white shadow border-none inline md:hidden')}>
-                        {isDateRangeActive ? 'Filtering by date' : 'Select date'}a
+                        {isDateRangeActive ? 'Filtering by date' : 'Select date'}
                     </button>
                     <div className="flex-grow " />
                     <button onClick={() => setShowPublish(true)} className="bg-blue-700 text-white text-sm font-bold rounded px-5 py-2">Publish</button>

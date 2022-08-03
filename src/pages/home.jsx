@@ -18,7 +18,7 @@ const HomePage = () => {
     useEffect(() => {
         axios.get('https://ghibliapi.herokuapp.com/films').then(({data}) => setFilms(data))
         // wait till the carousel node is rendered
-        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 300)
+        setTimeout(() => setMaxScroll(carousel.current.scrollWidth - carousel.current.clientWidth), 400)
     }, [maxScroll])
 
     const moveCarousel = (isNext) => {
