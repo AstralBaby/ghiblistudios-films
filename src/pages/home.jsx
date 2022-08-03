@@ -89,7 +89,7 @@ const HomePage = () => {
                             <button disabled={scroll === 0} onClick={slidePrev} className="flex-shrink-0 w-12 h-12 enabled:bg-gray-900 bg-gray-400 rounded-full">
                                 <i className='bx bx-chevron-left text-4xl text-white'></i>
                             </button>
-                            <div ref={carousel} onScroll={e => setScroll(e.target.scrollLeft)} className="flex overflow-hidden mx-5 flex-grow">
+                            <div ref={carousel} onScroll={e => setScroll(e.target.scrollLeft)} className="flex overflow-hidden md:mx-5 flex-grow">
                                 {(cachedFilms.length ? cachedFilms : films).map((entry, idx) => (
                                     <div onClick={() => setCurrentFilm(entry.id)} key={idx} className="cursor-pointer flex-none p-5 w-full md:w-1/6 lg:w-2/12 xl:w-2/12">
                                         <MovieCard title={entry.title} thumb={entry.image}></MovieCard>
@@ -112,7 +112,7 @@ const HomePage = () => {
 
 const FilmDetails = ({ film, onRemove }) => {
     return (
-        <div className="bg-white/90 rounded-t-xl mt-auto -mb-10 mx-auto p-10 shadow-lg w-2/4 text-gray-700">
+        <div className="bg-white/90 rounded-t-xl mt-auto -mb-10 mx-auto p-10 shadow-lg w-full md:w-2/4 text-gray-700">
             <div className="flex justify-between align-center">
                 <div className="font-black text-2xl">
                     {film.title}
